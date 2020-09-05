@@ -71,13 +71,18 @@ namespace TestTaskTODO.Controllers
             return Ok(todoListVM);
         }
 
+        public class test
+        {
+            public string name { get; set; }
+        }
+
         // POST api/<TodoListController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string name)
+        public async Task<IActionResult> Post([FromBody]string name)
         {
             var todoList = new TodoList()
                            {
-                                   Name = name
+                                   Name = name.name
                            };
 
             this.db.Add(todoList);

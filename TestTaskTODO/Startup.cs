@@ -44,6 +44,8 @@ namespace TestTaskTODO
                                        {
                                            configuration.RootPath = "ClientApp/build";
                                        });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +67,8 @@ namespace TestTaskTODO
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors(options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
             app.UseEndpoints(endpoints =>
                              {

@@ -1,25 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import TodoList from './Component/TodoListComponent/TodoListComponent';
+import TodoItem from './Component/TodoItemComponent/TodoItemComponent';
+import NotFoundPage from './NotFoundPage';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Switch>
+          <Redirect from="/home" to="/" />
+          <Route exact path="/" component={TodoList} />
+          <Route path="/todoitem" component={TodoItem} />
+          <Route path="/ask" />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 

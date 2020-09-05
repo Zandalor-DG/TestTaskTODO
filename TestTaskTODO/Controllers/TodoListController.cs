@@ -64,7 +64,8 @@ namespace TestTaskTODO.Controllers
                                                                         {
                                                                                 Name = a.Name,
                                                                                 Id = a.Id,
-                                                                                CreateDate = a.CreateDate
+                                                                                CreateDate = a.CreateDate,
+                                                                                CompletedTask = a.Completed
                                                                         }).ToList()
                              };
 
@@ -82,7 +83,7 @@ namespace TestTaskTODO.Controllers
         {
             var todoList = new TodoList()
                            {
-                                   Name = name.name
+                                   Name = name
                            };
 
             this.db.Add(todoList);

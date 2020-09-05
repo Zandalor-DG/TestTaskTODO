@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TestTaskTODO.Controllers
 {
+    using Microsoft.EntityFrameworkCore;
     using TestTaskTODO.Model;
 
     [Route("api/[controller]")]
@@ -32,14 +33,32 @@ namespace TestTaskTODO.Controllers
 
         // POST api/<TodoItemController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string name)
         {
+            var todoItem = new TodoItem()
+                           {
+                                   Name = name
+                           };
+
+            this.db.Add(todoItem);
+            await this.db.SaveChangesAsync();
+
+            return Ok();
         }
 
         // PUT api/<TodoItemController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id)
         {
+            var updateTodoItem = await this.db.TodoItems.SingleOrDefaultAsync(a => a.Id == id);
+            if (updateTodoItem == null)
+                return NotFound();
+
+            updateTodoItem.Completed = !updateTodoItem.Completed;
+            this.db.Update(updateTodoItem);
+            await this.db.SaveChangesAsync();
+
+            return Ok();
         }
 
         // DELETE api/<TodoItemController>/5

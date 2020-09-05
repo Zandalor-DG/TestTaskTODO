@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import API from 'axios';
-import { TodoItem } from '../Entities/TodoItem';
 import { TodoList } from '../Entities/TodoList';
 import css from './TodoListComponentCss.module.css';
+import { NavLink } from 'react-router-dom';
+import { TodoItem } from '../Entities/TodoItem';
 
-export interface TodoListVM {
+interface TodoListVM {
   Items: TodoList[];
+  name: string;
+}
+
+interface TodoItemsVM {
+  Items: TodoItem[];
   name: string;
 }
 
@@ -14,6 +20,15 @@ export default class TodoListComponent extends React.Component {
     Items: [],
     name: '',
   };
+
+  // todoItemGET = (id: number): void => {
+  //   API.get(`https://localhost:44318/api/todoitem/${id}`).then((res) => {
+  //     const todoItems: TodoItemsVM[] = res.data;
+  //     this.setState({
+  //       Items: todoItems,
+  //     });
+  //   });
+  // };
 
   updateItems = (): void => {
     API.get(`https://localhost:44318/api/todolist`).then((res) => {
@@ -65,8 +80,14 @@ export default class TodoListComponent extends React.Component {
           <button type="submit">Add</button>
         </form>
         <ul>
-          {this.state.Items.map((person) => (
-            <li>{person.name}</li>
+          {this.state.Items.map((todoListItem) => (
+            <li>
+              <NavLink to={'api/todoItem/' + todoListItem.id}>
+                {todoListItem.name}(
+                {`${todoListItem.completedItemsCount}/${todoListItem.countAllItems}`}
+                )
+              </NavLink>
+            </li>
           ))}
         </ul>
       </div>

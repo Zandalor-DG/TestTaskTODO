@@ -1,6 +1,6 @@
 export interface TodoItem {
-  Name: string;
-  Id: number;
-  CreateDate: Date;
-  CompletedTask: boolean;
+  name: string;
+  id: number;
+  createDate: Date;
+  completedTask: boolean;
 }

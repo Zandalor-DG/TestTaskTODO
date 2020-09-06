@@ -10,6 +10,7 @@ interface TodoItemsState {
   name: string;
   inProgress: boolean;
   filter: string;
+  search: string;
 }
 
 interface TodoItemsMatch {
@@ -45,13 +46,16 @@ export default class TodoItemsComponent extends React.Component<
     name: '',
     inProgress: true,
     filter: 'all',
+    search: '',
   };
 
   todoItemGET = (id: number): void => {
-    // const undone = true;
-    // const search = '';
+    const undone = this.state.filter === 'undone' ? true : false;
+    const search = this.state.search;
 
-    API.get(`https://localhost:44318/api/todolist/${id}`).then((res) => {
+    API.get(
+      `https://localhost:44318/api/todolist/${id}?undone=${undone}&search=${search}`,
+    ).then((res) => {
       const todoItems: TodoItemsState = res.data.items;
       this.setState({
         Items: todoItems,
@@ -63,8 +67,16 @@ export default class TodoItemsComponent extends React.Component<
     this.setState({ name: event.target.value });
   };
 
+  handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ search: event.target.value }, () =>
+      this.todoItemGET(this.props.match.params.TodoListId),
+    );
+  };
+
   handleRadioChange(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ filter: event.target.value });
+    this.setState({ filter: event.target.value }, () =>
+      this.todoItemGET(this.props.match.params.TodoListId),
+    );
   }
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -92,6 +104,15 @@ export default class TodoItemsComponent extends React.Component<
   render() {
     return (
       <div>
+        <div>
+          <input
+            placeholder="Search..."
+            type="text"
+            name="name"
+            onChange={this.handleChangeSearch}
+            value={this.state.name}
+          />
+        </div>
         <div>
           <input
             name="filtered"
@@ -127,6 +148,7 @@ export default class TodoItemsComponent extends React.Component<
         <form onSubmit={this.handleSubmit}>
           <label>
             <input
+              placeholder="Add todo..."
               type="text"
               name="name"
               onChange={this.handleChange}

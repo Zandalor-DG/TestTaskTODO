@@ -1,10 +1,10 @@
 import { TodoItem } from './TodoItem';
 
 export interface TodoList {
-  name: String;
-  id: Number;
+  name: string;
+  id: number;
   createDate: Date;
-  countAllItems: Number;
-  completedItemsCount: Number;
+  countAllItems: number;
+  completedItemsCount: number;
   items: TodoItem[];
 }

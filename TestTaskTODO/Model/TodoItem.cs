@@ -18,6 +18,8 @@
 
         public bool Completed { get; set; }
 
+        public TodoList ToDoList { get; set; }
+
         #endregion
 
         #region Constructors

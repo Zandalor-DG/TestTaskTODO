@@ -31,6 +31,10 @@ namespace TestTaskTODO.Controllers
 
         #endregion
 
+        #region Nested Classes
+
+        #endregion
+
         // GET: api/<TodoListController>
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -47,76 +51,52 @@ namespace TestTaskTODO.Controllers
 
             return Ok(todoListVM);
         }
-
+        
+        [HttpGet ("{id}")]
         // GET api/<TodoListController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id,  [FromQuery]string search, [FromQuery]bool undone)
         {
-            var todoList = await this.db.TodoLists.Include(a => a.Items).SingleOrDefaultAsync(a => a.Id == id);
+            var todoList = await this.db.TodoLists.Include(a => a.Items)
+                                     .SingleOrDefaultAsync(a => a.Id == id);
+
             if (todoList == null)
                 return NotFound();
+
+            var todoItemVM = todoList.Items.Where(item => (string.IsNullOrWhiteSpace(search) ||
+                                                           item.Name.ToLower()
+                                                               .Contains(search
+                                                                                 .ToLower())) && (!undone || !item.Completed))
+                                     .Select(a => new TodoItemVM()
+                                                  {
+                                                          Id = a.Id,
+                                                          Name = a.Name,
+                                                          CompletedTask = a.Completed,
+                                                          CreateDate = a.CreateDate
+                                                  }).ToList();
 
             var todoListVM = new TodoListVM()
                              {
                                      Id = todoList.Id,
                                      Name = todoList.Name,
-                                     Items = todoList.Items.Select(a => new TodoItemVM()
-                                                                        {
-                                                                                Name = a.Name,
-                                                                                Id = a.Id,
-                                                                                CreateDate = a.CreateDate,
-                                                                                CompletedTask = a.Completed
-                                                                        }).ToList()
+                                     Items = todoItemVM
                              };
 
             return Ok(todoListVM);
         }
 
-        public class test
-        {
-            public string name { get; set; }
-        }
-
         // POST api/<TodoListController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]string name)
+        public async Task<IActionResult> Post([FromBody] string name)
         {
+            if (name == null)
+                return NotFound();
+
             var todoList = new TodoList()
                            {
                                    Name = name
                            };
 
             this.db.Add(todoList);
-            await this.db.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        // PUT api/<TodoListController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string name)
-        {
-            var updateTodoList = await this.db.TodoLists.SingleOrDefaultAsync(a => a.Id == id);
-            if (updateTodoList == null)
-                return NotFound();
-
-            updateTodoList.Name = name;
-            this.db.Update(updateTodoList);
-            await this.db.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        // DELETE api/<TodoListController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var todoList = await this.db.TodoLists.Include(a => a.Items).SingleOrDefaultAsync(a => a.Id == id);
-            if (todoList == null)
-                return NotFound();
-
-            this.db.Remove(todoList.Items);
-            this.db.Remove(todoList);
             await this.db.SaveChangesAsync();
 
             return Ok();

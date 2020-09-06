@@ -1,4 +1,4 @@
-.TodoList {
+.TodoItem {
     border: 2px solid black;
     text-align: center;
     width: 500px;
@@ -10,4 +10,8 @@
 
 .TodoList li {
     margin-top: 40px;
+}
+
+.FinishedBusiness {
+    text-decoration: line-through;
 }

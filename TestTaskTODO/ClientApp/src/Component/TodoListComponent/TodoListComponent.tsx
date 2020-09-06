@@ -21,15 +21,6 @@ export default class TodoListComponent extends React.Component {
     name: '',
   };
 
-  // todoItemGET = (id: number): void => {
-  //   API.get(`https://localhost:44318/api/todoitem/${id}`).then((res) => {
-  //     const todoItems: TodoItemsVM[] = res.data;
-  //     this.setState({
-  //       Items: todoItems,
-  //     });
-  //   });
-  // };
-
   updateItems = (): void => {
     API.get(`https://localhost:44318/api/todolist`).then((res) => {
       const todoList: TodoList[] = res.data;
@@ -52,7 +43,7 @@ export default class TodoListComponent extends React.Component {
 
     API.post(
       `https://localhost:44318/api/todolist`,
-      { name: name },
+      JSON.stringify(name),
       config,
     ).then((res) => {
       this.updateItems();
@@ -66,10 +57,20 @@ export default class TodoListComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={css.TodoList}>
+        <ul>
+          {this.state.Items.map((todoListItem) => (
+            <li key={todoListItem.id}>
+              <NavLink to={'api/todoItem/' + todoListItem.id}>
+                {todoListItem.name}(
+                {`${todoListItem.completedItemsCount}/${todoListItem.countAllItems}`}
+                )
+              </NavLink>
+            </li>
+          ))}
+        </ul>
         <form onSubmit={this.handleSubmit}>
           <label>
-            Person Name:
             <input
               type="text"
               name="name"
@@ -79,17 +80,6 @@ export default class TodoListComponent extends React.Component {
           </label>
           <button type="submit">Add</button>
         </form>
-        <ul>
-          {this.state.Items.map((todoListItem) => (
-            <li>
-              <NavLink to={'api/todoItem/' + todoListItem.id}>
-                {todoListItem.name}(
-                {`${todoListItem.completedItemsCount}/${todoListItem.countAllItems}`}
-                )
-              </NavLink>
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }

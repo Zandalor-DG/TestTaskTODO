@@ -3,18 +3,18 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import NotFoundPage from './NotFoundPage';
 import './App.css';
 import TodoListComponent from './Component/TodoListComponent/TodoListComponent';
-import TodoItemComponent from './Component/TodoItemComponent/TodoItemComponent';
+import TodoItemsComponent from './Component/TodoItemComponent/TodoItemsComponent';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Switch>
-          <Redirect from="/home" to="/" />
+          <Redirect from="/todolist/" to="/" />
           <Route exact path="/" component={TodoListComponent} />
           <Route
             path="/api/todoitem/:TodoListId"
-            component={TodoItemComponent}
+            component={TodoItemsComponent}
           />
           <Route path="/ask" />
           <Route component={NotFoundPage} />
